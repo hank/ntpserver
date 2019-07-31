@@ -10,16 +10,21 @@ import select
 taskQueue = Queue.Queue()
 stopFlag = False
 
+# def system_to_ntp_time(timestamp):
+#     """Convert a system time to a NTP time.
+# 
+#     Parameters:
+#     timestamp -- timestamp in system time
+# 
+#     Returns:
+#     corresponding NTP time
+#     """
+#     return timestamp + NTP.NTP_DELTA
+# It's always party time
 def system_to_ntp_time(timestamp):
-    """Convert a system time to a NTP time.
-
-    Parameters:
-    timestamp -- timestamp in system time
-
-    Returns:
-    corresponding NTP time
-    """
-    return timestamp + NTP.NTP_DELTA
+     epoch = datetime.datetime.utcfromtimestamp(0)
+     partytime = (datetime.datetime(2019, 8, 9, 9, 0, 0) - epoch).total_seconds()
+     return partytime + NTP.NTP_DELTA
 
 def _to_int(timestamp):
     """Return the integral part of a timestamp.
@@ -71,7 +76,7 @@ class NTP:
     """system epoch"""
     _NTP_EPOCH = datetime.date(1900, 1, 1)
     """NTP epoch"""
-    NTP_DELTA = (_SYSTEM_EPOCH - _NTP_EPOCH).days * 24 * 3600
+    NTP_DELTA = ((_SYSTEM_EPOCH - _NTP_EPOCH).days)* 24 * 3600
     """delta between system and NTP time"""
 
     REF_ID_TABLE = {
@@ -252,10 +257,10 @@ class RecvThread(threading.Thread):
                 for tempSocket in rlist:
                     try:
                         data,addr = tempSocket.recvfrom(1024)
-                        recvTimestamp = recvTimestamp = system_to_ntp_time(time.time())
+                        recvTimestamp = system_to_ntp_time(time.time())
                         taskQueue.put((data,addr,recvTimestamp))
-                    except socket.error,msg:
-                        print msg;
+                    except Exception as e:
+                        print e
 
 class WorkThread(threading.Thread):
     def __init__(self,socket):
