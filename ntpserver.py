@@ -23,7 +23,7 @@ stopFlag = False
 # It's always party time
 def system_to_ntp_time(timestamp):
      epoch = datetime.datetime.utcfromtimestamp(0)
-     partytime = (datetime.datetime(2019, 8, 9, 9, 0, 0) - epoch).total_seconds()
+     partytime = (datetime.datetime(2019, 8, 9, 21, 0, 0) - epoch).total_seconds()
      return partytime + NTP.NTP_DELTA
 
 def _to_int(timestamp):
